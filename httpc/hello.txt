@@ -1,25 +1,22 @@
 HTTP/1.0 200 OK
-Date: Thu, 06 Feb 2020 23:28:08 GMT
+Date: Thu, 06 Feb 2020 23:39:02 GMT
 Content-Type: application/json
-Content-Length: 383
+Content-Length: 324
 Connection: keep-alive
 Server: gunicorn/19.9.0
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Credentials: true
 
 {
-  "args": {}, 
-  "data": "'{Assignment:1}'", 
-  "files": {}, 
-  "form": {}, 
+  "args": {
+    "assignment": "1", 
+    "course": "networking"
+  }, 
   "headers": {
-    "Content-Length": "16", 
-    "Content-Type": "text/plain", 
     "Host": "httpbin.org", 
     "User-Agent": "Concordia-HTTP/1.0", 
-    "X-Amzn-Trace-Id": "Root=1-5e3ca108-a6a53eac901cd7b0a95087d6"
+    "X-Amzn-Trace-Id": "Root=1-5e3ca396-dc3dfdb44eccb54cd74481c8"
   }, 
-  "json": null, 
   "origin": "132.205.230.2", 
-  "url": "http://httpbin.org/post"
+  "url": "http://httpbin.org/get?course=networking&assignment=1"
 }

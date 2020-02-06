@@ -9,10 +9,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.SocketAddress;
 
@@ -96,7 +94,6 @@ public class httpc {
 					boolean verboseOption = false;
 					boolean headersOption = false;
 					String url = null;
-					boolean outputFile = false;
 					File outFile=null;
 					//A map is used to store headers when -h option is on. 
 					Map<String,String> headers = new HashMap<String,String>();
@@ -122,7 +119,6 @@ public class httpc {
 							}
 						}
 						if (args[i].toLowerCase().equals("-o")) {
-							outputFile = true;
 							outFile = new File(args[i+1]);
 							
 						}
@@ -142,8 +138,6 @@ public class httpc {
 					boolean headersOption = false;
 					boolean inlineOption = false;
 					boolean fileOption = false;
-					boolean outputFile = false;
-					
 					String url = null;
 					Map<String,String> headers = new HashMap<String,String>();
 					String inline = null;
@@ -200,7 +194,6 @@ public class httpc {
 							
 						}
 						if (args[i].toLowerCase().equals("-o")) {
-							outputFile = true;
 							outFile = new File(args[i+1]);
 							
 						}
