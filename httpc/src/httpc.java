@@ -1,19 +1,16 @@
 import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
@@ -99,13 +96,16 @@ public class httpc {
 					boolean verboseOption = false;
 					boolean headersOption = false;
 					String url = null;
+					boolean outputFile = false;
+					File outFile=null;
 					//A map is used to store headers when -h option is on. 
 					Map<String,String> headers = new HashMap<String,String>();
 					
 					
-					url = args[n-1];
+					
 					// iterate the args array, check if any of the methods is requested.
 					for (int i = 0;i<n;i++) {
+						if (args[i].toLowerCase().contains("http://")) url = args[i];
 						if (args[i].toLowerCase().equals("-v")) {
 							if (headersOption) {
 								System.err.println("-h before -v error.");
@@ -121,11 +121,16 @@ public class httpc {
 							    headers.put(keyStr,valueStr);
 							}
 						}
+						if (args[i].toLowerCase().equals("-o")) {
+							outputFile = true;
+							outFile = new File(args[i+1]);
+							
+						}
 					}
 					
 					if (!headersOption) headers = null;
 					
-					sendGet(url,verboseOption,headers);
+					sendGet(url,verboseOption,headers,outFile);
 				}catch(Exception e) {
 					System.err.println(ERROR_MESSAGE);
 				}		
@@ -137,15 +142,18 @@ public class httpc {
 					boolean headersOption = false;
 					boolean inlineOption = false;
 					boolean fileOption = false;
+					boolean outputFile = false;
 					
 					String url = null;
 					Map<String,String> headers = new HashMap<String,String>();
 					String inline = null;
 					File file=null;
+					File outFile=null;
 					
 					
-					url = args[n-1];
+					
 					for (int i = 0;i<n;i++) {
+						if (args[i].toLowerCase().contains("http://")) url = args[i];
 						if (args[i].toLowerCase().equals("-v")) {
 							if (headersOption) {
 								System.err.println("-h before -v error.");
@@ -191,6 +199,11 @@ public class httpc {
 							
 							
 						}
+						if (args[i].toLowerCase().equals("-o")) {
+							outputFile = true;
+							outFile = new File(args[i+1]);
+							
+						}
 					}
 					
 					if ((inlineOption)&&(fileOption)) {
@@ -201,7 +214,7 @@ public class httpc {
 					
 					if (!headersOption) headers = null;
 					
-					sendPost(url,verboseOption,headers,inline,file);
+					sendPost(url,verboseOption,headers,inline,file,outFile);
 				}catch(Exception e) {
 					System.err.println(ERROR_MESSAGE);
 				}
@@ -212,7 +225,7 @@ public class httpc {
 		}
 	}
 
-	public static void sendGet(String url, boolean verbose,Map<String, String> headers) throws Exception{
+	public static void sendGet(String url, boolean verbose,Map<String, String> headers,File outFile) throws Exception{
 				
 		//set up GET request and establish the connection.
 		URL website = new URL(url);
@@ -254,11 +267,24 @@ public class httpc {
 		if (!verbose) {
 			result = result.substring(result.indexOf('{'));
 		}
-		System.out.println(result);
+		if (outFile != null) {
+			FileWriter fw = null;
+			try {
+				fw = new FileWriter(outFile);
+				fw.write(result);
+				System.out.println("Writing to file "+outFile.getAbsolutePath());
+			}catch(IOException e) {
+				e.printStackTrace();
+			}finally {
+				fw.close();
+			}
+		}else {
+			System.out.println(result);
+		}
 						
 	}
 	
-	public static void sendPost(String url,boolean verbose,Map<String, String> headers,String inline, File file) throws Exception {	
+	public static void sendPost(String url,boolean verbose,Map<String, String> headers,String inline, File file,File outFile) throws Exception {	
 		URL website = new URL(url);
 		Socket socket = new Socket();
 		SocketAddress socketAddress = new InetSocketAddress(website.getHost(),80);
@@ -324,7 +350,21 @@ public class httpc {
 		if (!verbose) {
 			result = result.substring(result.indexOf('{'));
 		}
-		System.out.println(result);
+		if (outFile != null) {
+			FileWriter fw = null;
+			try {
+				fw = new FileWriter(outFile);
+				fw.write(result);
+				System.out.println("Writing to file "+outFile.getAbsolutePath());
+			}catch(IOException e) {
+				e.printStackTrace();
+			}finally {
+				fw.close();
+			}
+		}else {
+			System.out.println(result);
+		}
+	
 		
 	}
 	
